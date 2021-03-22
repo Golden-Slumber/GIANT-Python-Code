@@ -36,8 +36,8 @@ def generateX(n, d, datatype, v=4):
     
     # ============ Generate the Singular Values ============ #
     if datatype[1] == '1':
-        vecS = numpy.logspace(0, -1, d)
-        vecS = numpy.logspace(0, -4, d)
+        # vecS = numpy.logspace(0, -1, d)
+        vecS = numpy.logspace(0, -2, d)
     elif datatype[1] == '6':
         vecS = numpy.logspace(0, -6, d)
     elif datatype[1] == '8':
@@ -80,16 +80,17 @@ def generateDataLogis(n, d, datatype):
 
 def main():
     # specify parameter
-    n = 200000 # number of samples
-    d = 1000 # number of features
-    datatype = 'N8' # N denotes "non-uniform", 8 denotes the condition number of X
+    n = 10000 # number of samples
+    d = 20 # number of features
+    datatype = 'U1' # N denotes "non-uniform", 8 denotes the condition number of X
     
     matX, vecY, vecW = generateDataLogis(n, d, datatype)
 
     #outfile = datatype + '_n=' + str(n) + '_d=' + str(d) + '.npz'
     outfile = 'logis_' + datatype + '.npz'
     print(matX.shape)
-    
+    print(vecY.shape)
+
     numpy.savez(outfile, X=matX, w=vecW, y=vecY)
     
     npzfile = numpy.load(outfile)

@@ -65,7 +65,8 @@ class Solver:
             wold = w
             w = self.update(w, gamma, isSearch)
             
-            err = numpy.linalg.norm(w - wopt) / wnorm
+            # err = numpy.linalg.norm(w - wopt) / wnorm
+            err = self.objfun(w) - self.objfun(wopt)
             errorList.append(err)
             print('Iter ' + str(t) + ': error is ' + str(err))
             
@@ -76,7 +77,14 @@ class Solver:
         
         self.w = w
         return errorList
-    
+
+    def objfun(self, w):
+        loss = 0
+        for executor in self.executorList:
+            loss += executor.objFun(w)
+        loss /= self.m
+        return loss
+
     def update(self, w, gamma, isSearch):
         '''
         Perform one iteration of update

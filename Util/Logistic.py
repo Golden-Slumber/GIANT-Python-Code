@@ -10,6 +10,9 @@ class Solver:
     def __init__(self, X=None, y=None):
         if (X is not None) and (y is not None):
             self.n, self.d = X.shape
+            print('logistic solver')
+            print(X.shape)
+            print(y.shape)
             self.xMat = X * y.reshape(self.n, 1)
         
     def fit(self, xMat, yVec):

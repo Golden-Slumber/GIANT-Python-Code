@@ -10,7 +10,9 @@ class Executor:
     def __init__(self, xMat, yVec, xMat2=None, yVec2=None):
         self.s, self.d = xMat.shape
         self.yVec = yVec.reshape(self.s, 1)
-        self.xMat = xMat * self.yVec
+        # self.xMat = xMat * self.yVec
+        # process of label yVec in following functions
+        self.xMat = xMat
 
         # matrix A is for approximating the Hessian matrix
         if xMat2 is None:
@@ -46,6 +48,8 @@ class Executor:
         return the mean of f_j for all local data x_j
         '''
         zVec = numpy.dot(self.xMat, wVec.reshape(self.d, 1))
+        #add label yVec
+        zVec = numpy.multiply(zVec, self.yVec)
         lVec = numpy.log(1 + numpy.exp(-zVec))
         loss = numpy.mean(lVec)
         reg = self.gamma / 2 * numpy.sum(wVec ** 2)
@@ -63,15 +67,22 @@ class Executor:
         Compute the gradient of the objective function using local data
         '''
         zVec = numpy.dot(self.xMat, self.w)
+        # add label yVec
+        zVec = numpy.multiply(zVec, self.yVec)
         expZVec = numpy.exp(zVec)
         vec1 = 1 + expZVec
         vec2 = -1 / vec1
+        # add label yVec
+        vec2 = numpy.multiply(vec2, self.yVec)
         grad = numpy.mean(self.xMat * vec2, axis=0)
         return grad.reshape(self.d, 1) + self.gamma * self.w
     
     def computeNewton(self, gVec):
         zVec = numpy.dot(self.xMat2, self.w)
+        # add label yVec
+        zVec = numpy.multiply(zVec, self.yVec)
         expZVec = numpy.exp(zVec)
+
         expZVec = numpy.sqrt(expZVec) / (1 + expZVec)
 
         aMat = self.xMat2 * (expZVec / numpy.sqrt(self.s))
