@@ -52,7 +52,7 @@ class Executor:
         zVec = numpy.multiply(zVec, self.yVec)
         lVec = numpy.log(1 + numpy.exp(-zVec))
         loss = numpy.mean(lVec)
-        reg = self.gamma / 2 * numpy.sum(wVec ** 2)
+        reg = self.gamma / 2 * (numpy.linalg.norm(wVec) ** 2)
         return loss + reg
     
     def objFunSearch(self):
@@ -74,7 +74,7 @@ class Executor:
         vec2 = -1 / vec1
         # add label yVec
         vec2 = numpy.multiply(vec2, self.yVec)
-        grad = numpy.mean(self.xMat * vec2, axis=0)
+        grad = numpy.mean(numpy.multiply(self.xMat, vec2), axis=0)
         return grad.reshape(self.d, 1) + self.gamma * self.w
     
     def computeNewton(self, gVec):
@@ -85,7 +85,7 @@ class Executor:
 
         expZVec = numpy.sqrt(expZVec) / (1 + expZVec)
 
-        aMat = self.xMat2 * (expZVec / numpy.sqrt(self.s))
+        aMat = numpy.multiply(self.xMat2, (expZVec / numpy.sqrt(self.s)))
         
         #pVec = CG.svrgSolver(aMat, gVec, self.gamma, alpha=0.6, Tol=self.gtol, MaxIter=self.maxiter)
         pVec = CG.cgSolver(aMat, gVec, self.gamma, Tol=self.gtol, MaxIter=self.maxiter)

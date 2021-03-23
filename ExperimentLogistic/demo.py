@@ -15,7 +15,7 @@ class Demo:
         self.repeat = repeat
         self.gamma = gamma
 
-    def fit(self, xMat, yVec, m=256):
+    def fit(self, xMat, yVec, m=20):
         n, self.d = xMat.shape
         n = int(numpy.floor(n / m)) * m
         self.xMat = xMat[0:n, :]
@@ -56,7 +56,7 @@ def loadData(dataname):
 
 def experiment(xMat, yVec, maxiter, repeat, gamma, isSearch, isExact, newtoniter=100):
     demo = Demo(maxiter, repeat, gamma)
-    demo.fit(xMat, yVec, m=256)
+    demo.fit(xMat, yVec, m=20)
 
     m = 20
     errMat = demo.testConvergence(m, isSearch=isSearch, isExact=isExact, newtoniter=newtoniter)
